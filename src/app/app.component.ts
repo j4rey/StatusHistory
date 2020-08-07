@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { DbstatusserviceService } from './service/dbstatusservice.service';
+import { ManagerstatusserviceService } from './service/managerstatusservice.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'status-history';
+  constructor(public dbStatusService: DbstatusserviceService, public managerStatusService: ManagerstatusserviceService){
+  }
 }
