@@ -1,14 +1,5 @@
-<div class="row">
-  <div class="column">
-    <app-status-history-parent [service]="dbStatusService">
-      <app-add-status-one #addStatusRef input></app-add-status-one>
-      <app-status-grid #iGridHistory grid></app-status-grid>
-    </app-status-history-parent>
-  </div>
-  <div class="column">
-    <app-status-history-parent [service]="managerStatusService">
-      <app-add-status-two #addStatusRef input></app-add-status-two>
-      <app-status-grid-two #iGridHistory grid></app-status-grid-two>
-    </app-status-history-parent>
-  </div>
-</div>
+<ul>
+    <li><a [routerLink]="['status']">Status</a></li>
+    <li><a [routerLink]="['grid']">Grid</a></li>
+</ul>
+<router-outlet></router-outlet>

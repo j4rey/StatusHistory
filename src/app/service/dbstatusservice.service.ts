@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Status } from '../model/status';
-import { BehaviorSubject, of, Observable } from 'rxjs';
-import { DropdownOption } from '../model/dropdownoption';
 import { GenericStatusService } from './generic-status-service';
 import { MockHttpClient } from '../mock-http';
 
@@ -9,20 +6,13 @@ import { MockHttpClient } from '../mock-http';
     providedIn: 'root',
 })
 export class DbstatusserviceService extends GenericStatusService {
-    constructor(private httpClient: MockHttpClient) {
+    constructor(httpClient: MockHttpClient) {
         super();
-        this.historySubject = new BehaviorSubject<Status[]>([]);
-        this.history = [];
-        this.getDropdownHttp().subscribe((x) => {
-            this.statusDropdownOptions = x;
+        httpClient.getDBStatus().subscribe((x) => {
+            this.dropdownSubject.next(x);
         });
-        this.httpClient.getHistory().subscribe((x) => {
-            this.history = x;
-            this.historySubject.next(this.history);
+        httpClient.getHistory().subscribe((x) => {
+            this.historySubject.next(x);
         });
-    }
-
-    getDropdownHttp(): Observable<DropdownOption[]> {
-        return this.httpClient.getDBStatus();
     }
 }

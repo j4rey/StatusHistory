@@ -1,17 +1,21 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { IService } from 'src/app/service/i-service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { map, switchMap } from 'rxjs/operators';
 import { IAddStatus } from '../i-add-status';
+import { Subscription, Observable } from 'rxjs';
+import { DropdownOption } from 'src/app/model/dropdownoption';
 
 @Component({
     selector: 'app-add-status-two',
     templateUrl: './add-status-two.component.html',
     styleUrls: ['./add-status-two.component.scss'],
 })
-export class AddStatusTwoComponent implements OnInit, IAddStatus {
+export class AddStatusTwoComponent implements OnInit, IAddStatus, OnDestroy {
     @Input() service: IService;
     form: FormGroup;
+    getDropDownOption$: Observable<DropdownOption[]>
+    formSubscription: Subscription;
 
     constructor(fb: FormBuilder) {
         this.form = fb.group({
@@ -21,7 +25,7 @@ export class AddStatusTwoComponent implements OnInit, IAddStatus {
     }
 
     ngOnInit(): void {
-        this.form
+        this.formSubscription = this.form
             .get('status')
             .valueChanges.pipe(
                 map((x: number) => x),
@@ -42,9 +46,14 @@ export class AddStatusTwoComponent implements OnInit, IAddStatus {
             });
     }
 
+    ngOnDestroy(): void {
+        this.formSubscription.unsubscribe;
+        this.formSubscription = null;
+    }
+
     onSubmit() {
         if (this.form.valid) {
-            this.service.add(this.form.value);
+            this.service.add({...this.form.value, ...{timestamp: new Date(Date.now())}});
             this.form.reset();
         } else {
             alert('comments is required');
@@ -53,5 +62,6 @@ export class AddStatusTwoComponent implements OnInit, IAddStatus {
 
     setService(service: IService) {
         this.service = service;
+        this.getDropDownOption$ = this.service?.getDropDownOption;
     }
 }

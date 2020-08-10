@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { IService } from 'src/app/service/i-service';
-import { Observable } from 'rxjs';
 import { Status } from 'src/app/model/status';
 import {map } from 'rxjs/operators';
 import { IGridHistory } from '../../add-status/i-add-status';
+import { Observable } from 'rxjs';
+import { DropdownOption } from 'src/app/model/dropdownoption';
 
 @Component({
   selector: 'app-status-grid',
@@ -12,9 +13,14 @@ import { IGridHistory } from '../../add-status/i-add-status';
 })
 export class StatusGridComponent implements IGridHistory {
   @Input() public service: IService;
+  statusObs$:Observable<Status[]>;
+  getDropDownOption$: Observable<DropdownOption[]>;
 
-  get statusObs():Observable<Status[]>{
-    return this.service.historySubject.asObservable().pipe(
+  constructor() { }
+
+  setService(service: IService) {
+    this.service = service;
+    this.statusObs$ = this.service?.getHistory.pipe(
       map((x:Status[])=>{
         x = x.sort((a:Status, b:Status)=>{
           return a.timestamp > b.timestamp?-1:1;
@@ -22,7 +28,10 @@ export class StatusGridComponent implements IGridHistory {
         return x; 
       })
     );
+    this.getDropDownOption$ = this.service?.getDropDownOption;
   }
 
-  constructor() { }
+  trackByFn(index, item) {
+    return item.timestamp; // or item.id
+  }
 }

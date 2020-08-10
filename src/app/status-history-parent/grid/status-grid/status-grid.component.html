@@ -1,5 +1,6 @@
-<ul *ngFor="let stsObj of (statusObs|async)">
-    <li>Grid 1: {{stsObj.status|statusOptionName: (service?.getDropDownOption|async)}} 
+<ul>
+    <li *ngFor="let stsObj of (statusObs$|async);trackBy: trackByFn">
+        Grid 1: {{stsObj.status|statusOptionName: (getDropDownOption$|async):'grid'}} 
         {{stsObj.comments}} 
         {{stsObj.timestamp|date:'long'}}</li>
 </ul>

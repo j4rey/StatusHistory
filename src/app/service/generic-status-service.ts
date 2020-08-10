@@ -1,48 +1,34 @@
 import { Status } from '../model/status';
-import { Subject, BehaviorSubject, Observable, of } from 'rxjs';
+import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { IService } from './i-service';
 import { DropdownOption } from '../model/dropdownoption';
-import { map } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 
 export abstract class GenericStatusService implements IService {
-    history: Status[];
-    historySubject: Subject<Status[]>;
-    statusDropdownOptions: DropdownOption[];
-
-    get getDropDownOption(): Observable<DropdownOption[]> {
-        if (this.statusDropdownOptions != null)
-            return of(this.statusDropdownOptions);
-        else return this.getDropdownHttp();
-    }
-
-    abstract getDropdownHttp(): Observable<DropdownOption[]>;
-
-    public get getLastKnownStatus(): Observable<number> {
-        return this.historySubject.asObservable().pipe(
-            map((x: Status[]) => {
-                var mostRecentDate = Math.max.apply(
-                    null,
-                    x.map((e: Status) => {
-                        return e.timestamp;
-                    })
-                );
-                var mostRecentStatus = x.find(
-                    (x) =>
-                        new Date(x.timestamp).getTime() ==
-                        new Date(mostRecentDate).getTime()
-                );
-                return mostRecentStatus ? mostRecentStatus.status : 0;
+    protected history: Status[]= [];
+    protected historySubject: Subject<Status[]> = new BehaviorSubject<Status[]>([]);;
+    getHistory: Observable<Status[]> = this.historySubject.pipe(tap(x=>{
+        this.history = x;
+        var mostRecentDate = Math.max.apply(
+            null,
+            this.history.map((e: Status) => {
+                return e.timestamp;
             })
         );
-    }
-
-    constructor() {
-        this.historySubject = new BehaviorSubject<Status[]>([]);
-        this.history = [];
-    }
+        var mostRecentStatus = this.history.find(
+            (y) =>
+                new Date(y.timestamp).getTime() ==
+                new Date(mostRecentDate).getTime()
+        );
+        this.getLastKnownStatus.next(mostRecentStatus ? mostRecentStatus.status : 0);
+    }));
+    protected dropdownSubject: Subject<DropdownOption[]> = new BehaviorSubject<DropdownOption[]>([]);
+    getDropDownOption: Observable<DropdownOption[]> = this.dropdownSubject.asObservable();
+    getLastKnownStatus: Subject<number> = new BehaviorSubject<number>(0);
+    
+    constructor() { }
 
     public add(newStatus: Status) {
-        newStatus.timestamp = new Date();
         this.history.push(newStatus);
         this.historySubject.next(this.history);
     }

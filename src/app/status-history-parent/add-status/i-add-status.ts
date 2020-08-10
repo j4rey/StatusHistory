@@ -7,4 +7,5 @@ export interface IAddStatus{
 
 export interface IGridHistory{
     service: IService;
+    setService(service: IService);
 }

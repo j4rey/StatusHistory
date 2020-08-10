@@ -1,10 +1,10 @@
 import { Status } from '../model/status';
-import { Subject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { DropdownOption } from '../model/dropdownoption';
 
 export interface IService {
-    historySubject: Subject<Status[]>;
-    add(newStatus: Status);
+    getHistory: Observable<Status[]>;
+    add(newStatus: Status):void;
     getDropDownOption: Observable<DropdownOption[]>;
     getLastKnownStatus: Observable<number>
 }

@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IService } from 'src/app/service/i-service';
+import { IGridHistory } from '../../add-status/i-add-status';
 import { Observable } from 'rxjs';
 import { Status } from 'src/app/model/status';
-import { IGridHistory } from '../../add-status/i-add-status';
 
 @Component({
   selector: 'app-status-grid-two',
@@ -11,9 +11,14 @@ import { IGridHistory } from '../../add-status/i-add-status';
 })
 export class StatusGridTwoComponent implements IGridHistory {
   @Input() public service: IService;
-  constructor() { }
+  statusObs$:Observable<Status[]>
 
-  get statusObs():Observable<Status[]>{
-    return this.service.historySubject.asObservable();
+  constructor() { }
+  setService(service: IService) {
+    this.service = service;
+    this.statusObs$ = this.service?.getHistory;
+  }
+  trackByFn(index, item) {
+    return item.timestamp; // or item.id
   }
 }

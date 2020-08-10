@@ -1,4 +1,8 @@
-<h3>Header 1 - {{(service.getLastKnownStatus | async)|statusOptionName: (service?.getDropDownOption|async)}}</h3>
-<ng-content select="[input]"></ng-content>
-<h3>Header 2 - {{(service.getLastKnownStatus | async)|statusOptionName: (service?.getDropDownOption|async)}}</h3>
-<ng-content select="[grid]"></ng-content>
+<ng-container *ngTemplateOutlet="statsView; context: { stats: getLastKnownStatus$ | async | statusOptionName: (getDropDownOption$ | async):'header' }"></ng-container>
+
+<ng-template #statsView let-Stat="stats">
+    <h3> Header 1 - {{ Stat }} </h3>
+    <ng-content select="[input]"></ng-content>
+    <h3> Header 2 - {{ Stat }} </h3>
+    <ng-content select="[grid]"></ng-content>
+</ng-template>

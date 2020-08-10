@@ -1,0 +1,54 @@
+<dx-data-grid
+    id="gridContainer"
+    [dataSource]="users$ | async"
+    [showBorders]="true"
+    keyExpr="id"
+    [allowColumnResizing]="true"
+>
+    <dxi-column
+        [width]="110"
+        dataField="id"
+        cellTemplate="actionTemplate"
+    ></dxi-column>
+    <div *dxTemplate="let obj of 'actionTemplate'">
+        <dx-drop-down-button
+            text="Action"
+            [dropDownOptions]="{ width: 230 }"
+            [items]="actionOptions"
+            keyExpr="id"
+            displayExpr="text"
+            (onItemClick)="onItemClick($event, obj)"
+        ></dx-drop-down-button>
+    </div>
+    <dxi-column dataField="id" caption="ID"></dxi-column>
+    <dxi-column dataField="name" caption="Name"></dxi-column>
+    <dxi-column dataField="username" caption="UserName"></dxi-column>
+    <dxi-column dataField="email" caption="Email"></dxi-column>
+    <dxi-column
+        dataField="address"
+        [width]="100"
+        [allowFiltering]="false"
+        [allowSorting]="false"
+        cellTemplate="addressTemplate"
+    ></dxi-column>
+
+    <dxi-column dataField="phone" caption="Phone"></dxi-column>
+    <dxi-column dataField="website" caption="Website"></dxi-column>
+    <dxi-column
+        dataField="company"
+        [width]="100"
+        [allowFiltering]="false"
+        [allowSorting]="false"
+        cellTemplate="companyTemplate"
+    ></dxi-column>
+
+    <div *dxTemplate="let adr of 'addressTemplate'">
+        <span>{{ adr.value.street }}{{ adr.value.suite }}</span
+        ><br />
+        <span>{{ adr.value.city }} {{ adr.value.zipcode }}</span>
+    </div>
+    <div *dxTemplate="let com of 'companyTemplate'">
+        {{ com.value.name }}
+    </div>
+</dx-data-grid>
+<button (click)="refreshGrid()">Refresh</button>

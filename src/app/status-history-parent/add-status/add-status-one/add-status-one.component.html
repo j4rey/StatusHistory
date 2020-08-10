@@ -1,7 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
     Status: <select class="form-control" formControlName="status">
-        <option *ngFor="let statusObj of (service?.getDropDownOption | async)" [value]="statusObj.id">{{statusObj.name}}</option>
+        <option *ngFor="let statusObj of (getDropDownOption$ | async)" [ngValue]="statusObj.id">{{statusObj.name}}</option>
     </select><br>
 
     <label>
